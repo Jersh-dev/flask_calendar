@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Flask Calendar</title>
+
+  <!-- FullCalendar CSS (CDN hosted) -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+
+  <!-- FullCalendar JS (CDN hosted) -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+<body>
+  <h1>My Flask Calendar</h1>
+
+  <!-- Div that will hold the calendar -->
+  <div id="calendar"></div>
+
+  <script>
+    // Wait until the page is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Get the calendar container element
+      var calendarEl = document.getElementById('calendar');
+
+      // Create a new FullCalendar instance
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',  // default to month view
+        events: '/events',            // fetch events from Flask backend
+
+        // When a date is clicked, prompt the user to enter an event
+        dateClick: function(info) {
+          let title = prompt("Enter event title:");
+          if (title) {
+            // Send event data to the backend (/add route)
+            fetch("/add", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ title: title, date: info.dateStr })
+            }).then(() => calendar.refetchEvents());  // reload events from server
+          }
+        }
+      });
+
+      // Render the calendar inside the #calendar div
+      calendar.render();
+    });
+  </script>
+</body>
+</html>
