@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset ="utf-8">
+        <title>Schedule DR Test</title>
+    </head>
+        <body>
+            <h1>Schedule Disaster Recovery Test</h1>
+            <!--Form to add a new event -->
+            <!-- When submitted, it sends data via POST to /add-event -->
+            <form method ="POST">
+
+                <!--Event Name-->
+                <label> Test Name: </label><br>
+                <input type="text" name="title" placeholder="Example: Disaster Recovery Test US eCommerce Payment App" required><br><br>
+
+                <!--Start dat/time of test-->
+                <label> Start Date & Time:</label><br>
+                <input type="datetime-local" name="start" required><br><br>
+                
+                <!--Event Name-->
+                <label> End Date & Time:</label><br>
+                <input type="datetime-local" name="end" required><br><br>
+                
+                <!--Event Name-->
+                <label> Description:</label><br>
+                <textarea name="description" required></textarea><br><br>       
+                
+                <!--Event Name-->
+                <button type="submit">Save Event</button>
+            </form>
+            <br>
+            <!--Link back to calendar-->
+            <a href ="{{url_for('index')}}">Back to Calendar</a>
+        </body>
+
+</html>
