@@ -1,50 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Flask Calendar</title>
-
-  <!-- FullCalendar CSS (CDN hosted) -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
-
-  <!-- FullCalendar JS (CDN hosted) -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <meta charset="utf-8">
+    <title>DR Test Calendar</title>
+    <style>
+        /* Calendar table styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        /* Each cell in the calendar */
+        th, td {
+            border: 1px solid #ddd;
+            width: 14.2%;      /* 100% / 7 days */
+            height: 80px;      /* Fixed height for each day */
+            text-align: center;
+            vertical-align: top;
+        }
+        /* Highlight for today */
+        .today {
+            background-color: #ffeb3b;
+        }
+        /* Placeholder for events (will add later) */
+        .event {
+            background-color: #90ee90;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-  <h1>My Flask Calendar</h1>
+    <h1>Disaster Recovery Test Calendar</h1>
 
-  <!-- Div that will hold the calendar -->
-  <div id="calendar"></div>
+    <!-- Link to scheduling form -->
+    <a href="{{ url_for('add_event') }}">➕ Schedule a Test</a>
 
-  <script>
-    // Wait until the page is fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      
-      // Get the calendar container element
-      var calendarEl = document.getElementById('calendar');
+    <!-- Display month + year -->
+    <h2 id="month-year"></h2>
 
-      // Create a new FullCalendar instance
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',  // default to month view
-        events: '/events',            // fetch events from Flask backend
+    <!-- Calendar structure -->
+    <table id="calendar">
+        <thead>
+            <tr>
+                <!-- Static day headers -->
+                <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+                <th>Thu</th><th>Fri</th><th>Sat</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body"></tbody>
+    </table>
 
-        // When a date is clicked, prompt the user to enter an event
-        dateClick: function(info) {
-          let title = prompt("Enter event title:");
-          if (title) {
-            // Send event data to the backend (/add route)
-            fetch("/add", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ title: title, date: info.dateStr })
-            }).then(() => calendar.refetchEvents());  // reload events from server
-          }
+    <script>
+        // Get today's date
+        const today = new Date();
+
+        // Element for displaying current month and year
+        const monthYear = document.getElementById("month-year");
+
+        // Array of month names (to convert from number → text)
+        const months = [
+            "January","February","March","April","May","June",
+            "July","August","September","October","November","December"
+        ];
+
+        // Track current month and year (start with today)
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        // Function to render the calendar
+        function renderCalendar(month, year) {
+            // Update month-year heading
+            monthYear.textContent = months[month] + " " + year;
+
+            // Get which day of week the month starts on (0=Sunday, 6=Saturday)
+            const firstDay = new Date(year, month).getDay();
+
+            // Get total number of days in the month
+            // (Day 0 of next month gives last day of current month)
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Clear out any existing rows before re-rendering
+            const body = document.getElementById("calendar-body");
+            body.innerHTML = "";
+
+            let date = 1; // Start counting from day 1
+            for (let i = 0; i < 6; i++) { // Max 6 weeks in a month
+                let row = document.createElement("tr");
+
+                for (let j = 0; j < 7; j++) { // 7 days in a week
+                    let cell = document.createElement("td");
+
+                    // Fill empty cells before first day of month
+                    if (i === 0 && j < firstDay) {
+                        cell.textContent = "";
+                    }
+                    // Stop filling when days exceed month length
+                    else if (date > daysInMonth) {
+                        break;
+                    }
+                    else {
+                        // Set the cell text to the day number
+                        cell.textContent = date;
+
+                        // Highlight today
+                        if (
+                            date === today.getDate() &&
+                            year === today.getFullYear() &&
+                            month === today.getMonth()
+                        ) {
+                            cell.classList.add("today");
+                        }
+
+                        // Add data attribute to store full date
+                        cell.setAttribute("data-date", `${year}-${month+1}-${date}`);
+
+                        // Add click handler to schedule event
+                        cell.addEventListener("click", () => {
+                            // For now → redirect to Flask form
+                            window.location.href = "/add_event";
+                        });
+
+                        // Move to next date
+                        date++;
+                    }
+                    // Add cell to row
+                    row.appendChild(cell);
+                }
+                // Add row to table body
+                body.appendChild(row);
+            }
         }
-      });
 
-      // Render the calendar inside the #calendar div
-      calendar.render();
-    });
-  </script>
+        // Render the initial calendar
+        renderCalendar(currentMonth, currentYear);
+    </script>
 </body>
 </html>
