@@ -1,11 +1,24 @@
 from flask import Flask, render_template, request,redirect, url_for, jsonify
-from datetime import datetime
+from datetime import datetime, timedelta
 # Create the Flask app
 app = Flask(__name__)
 
 # Temporary in-memory store for events
 # (will reset every time the app restarts)
 events = []
+
+@app.route("/auto_schedule", methods =["POST"])
+def auto_schedule():
+    """Automatically schedule a Disaster Recovery Test 7 weeks from today"""
+    auto_date = datetime.now() + timedelta(weeks=7)
+
+    event = {
+        "title": "Auto Scheduled DR Test",
+        "start": auto_date.strftime("%Y-%m-%dT%H:%M")
+    }
+    events.append(event)
+    return redirect(url_for("index"))
+
 
 @app.route("/")
 def index():
@@ -18,7 +31,7 @@ def get_events():
     # Return all events as JSON so FullCalendar can load them
     return jsonify(events)
 
-@app.route("/add", methods =["POST"])
+@app.route("/add_event", methods =["GET", "POST"])
 def add_event():
     if request.method == "POST":
         # Grab form data from the request

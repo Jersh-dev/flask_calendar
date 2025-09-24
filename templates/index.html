@@ -16,6 +16,7 @@
             height: 80px;      /* Fixed height for each day */
             text-align: center;
             vertical-align: top;
+            padding: 5px;
         }
         /* Highlight for today */
         .today {
@@ -26,6 +27,8 @@
             background-color: #90ee90;
             font-size: 12px;
             margin-top: 5px;
+            padding: 2px;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -33,7 +36,20 @@
     <h1>Disaster Recovery Test Calendar</h1>
 
     <!-- Link to scheduling form -->
-    <a href="{{ url_for('add_event') }}">➕ Schedule a Test</a>
+    <button onclick ="window.location.href='{{ url_for('add_event') }}'"'>
+      Manual Test Schedule
+    </button>
+
+    <!-- Automatic Scheduling Button-->
+    <form action="{{url_for('auto_schedule')}}" method="post" style="display:inline;">
+      <button type="submit"> Auto-Schedule Test (7 Weeks Out)</button>
+    </form>
+
+    <!-- Calendar navigation -->
+    <div>
+      <button onclick="prevMonth()"> Previous </button>
+      <button onclick="nextMonth()"> Next</button>
+    </div>
 
     <!-- Display month + year -->
     <h2 id="month-year"></h2>
@@ -57,6 +73,7 @@
         // Element for displaying current month and year
         const monthYear = document.getElementById("month-year");
 
+
         // Array of month names (to convert from number → text)
         const months = [
             "January","February","March","April","May","June",
@@ -67,9 +84,18 @@
         let currentMonth = today.getMonth();
         let currentYear = today.getFullYear();
 
+         /**
+         * Render the calendar grid
+         * @param {number} month - The month index (0=Jan, 11=Dec)
+         * @param {number} year - Full year number
+         * @param {Array} events - List of event objects from Flask
+         */
+
         // Function to render the calendar
-        function renderCalendar(month, year) {
-            // Update month-year heading
+        function renderCalendar(month, year, events = []) {
+            
+            // Update header to show month year
+            const monthYear = document.getElementById("month-year");
             monthYear.textContent = months[month] + " " + year;
 
             // Get which day of week the month starts on (0=Sunday, 6=Saturday)
@@ -78,15 +104,19 @@
             // Get total number of days in the month
             // (Day 0 of next month gives last day of current month)
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            // Clear out any existing rows before re-rendering
+            
+            // Reference to calendar body <tbody>
             const body = document.getElementById("calendar-body");
-            body.innerHTML = "";
+            body.innerHTML = ""; // Clear out any existing rows before re-rendering
+
 
             let date = 1; // Start counting from day 1
-            for (let i = 0; i < 6; i++) { // Max 6 weeks in a month
+
+            // Max 6 weeks in a month
+            for (let i = 0; i < 6; i++) { 
                 let row = document.createElement("tr");
 
+                // Create 7 cells (Sun-Sat)
                 for (let j = 0; j < 7; j++) { // 7 days in a week
                     let cell = document.createElement("td");
 
@@ -99,8 +129,11 @@
                         break;
                     }
                     else {
-                        // Set the cell text to the day number
-                        cell.textContent = date;
+                        // Create date string YYYY-MM-DD for this cell
+                        let dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+
+                        // Add date number at the top of the cell
+                        cell.innerHTML = `<strong>${date}</strong> <br>`;
 
                         // Highlight today
                         if (
@@ -110,14 +143,28 @@
                         ) {
                             cell.classList.add("today");
                         }
+                        // Insert events for this day
+                        events.forEach(ev => {
+                          // Extract date part from event.start (YYYY-MM-DDTHH:MM)
+                          let eventDate = ev.start.split("T")[0];
+                          if (eventDate === dateStr) {
+                            //Create Event Label
+                            let div = document.createElement("div");
+                            div.className = "event";
+                            div.textContent = ev.title; // Show event title
+                            cell.appendChild(div);  // Add event to cell
+                          }  
+                        });
+
+
 
                         // Add data attribute to store full date
-                        cell.setAttribute("data-date", `${year}-${month+1}-${date}`);
+                        //cell.setAttribute("data-date", `${year}-${month+1}-${date}`);
 
                         // Add click handler to schedule event
                         cell.addEventListener("click", () => {
                             // For now → redirect to Flask form
-                            window.location.href = "/add_event";
+                            window.location.href = `/add_event?date=${dateStr}`;
                         });
 
                         // Move to next date
@@ -131,8 +178,33 @@
             }
         }
 
-        // Render the initial calendar
-        renderCalendar(currentMonth, currentYear);
+        function prevMonth() {
+          currentMonth--; //step back one month
+          if (currentMonth < 0) {
+            currentMonth = 11; // wrap back to december
+            currentYear--; //decrease year
+          }
+          loadAndRenderCalendar();
+        }
+        function nextMonth() {
+          currentMonth++; //step forward one month
+          if (currentMonth > 11) {
+            currentMonth = 0; //wrap forward to january
+            curentYear++; //increase year
+          }
+          loadAndRenderCalendar();
+        }
+
+        //Helper to fetch events and render
+        function loadAndRenderCalendar() {
+          fetch("/events")
+          .then(response => response.json())
+          .then(data => {
+            renderCalendar(currentMonth, currentYear, data);
+          });
+        }
+
+      loadAndRenderCalendar();
     </script>
 </body>
 </html>
