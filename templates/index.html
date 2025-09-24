@@ -36,7 +36,8 @@
     <h1>Disaster Recovery Test Calendar</h1>
 
     <!-- Link to scheduling form -->
-    <button onclick="window.location.href='{{ url_for("add_event") }}'">
+    <form action="{{url_for('add_event')}}" method="get" style="display:inline;">
+    <button type="submit">
       Manual Test Schedule
     </button>
 
