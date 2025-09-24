@@ -121,10 +121,17 @@
           currentMonth++; //step forward one month
           if (currentMonth > 11) {
             currentMonth = 0; //wrap forward to january
-            curentYear++; //increase year
+            currentYear++; //increase year
           }
           loadAndRenderCalendar();
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const prevBtn = document.getElementById("prev-month");
+            const nextBtn = document.getElementById("next-month");
+            prevBtn.addEventListener("click", prevMonth);
+            nextBtn.addEventListener("click", nextMonth);
+        });
 
         //Helper to fetch events and render
         function loadAndRenderCalendar() {
