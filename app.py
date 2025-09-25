@@ -1,5 +1,9 @@
+# app.py
+# This is the python application for the Flask Calendar Project
+
 from flask import Flask, render_template, request,redirect, url_for, jsonify
 from datetime import datetime, timedelta
+
 # Create the Flask app
 app = Flask(__name__)
 

@@ -32,6 +32,13 @@ th, td {
     border-radius: 3px;
 }
 
+/* Event outside allowed time window */
+.event.invalid {
+    background-color: #ffb6b6;
+    font-weight: bold;
+    color: white;
+}
+
 .event.invalid span{
     display: block;
     font-size: 10px;

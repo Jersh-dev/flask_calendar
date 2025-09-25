@@ -87,6 +87,14 @@
                             div.className = "event";
                             div.textContent = ev.title; 
                             
+                            //Validate allowed day & hour (CST)
+                            let eventTime = new Date(ev.start);
+                            // Adjust to CST if your times are UTC
+                            eventTime = new Date(eventTime.getTime()) - 6*60*60*1000); //UTC > CST conversion
+                            let day = eventTime.getDay();
+                            let hour = eventTime.getHours();
+
+                            
                          
                             // Add Edit-on-click
                             div.addEventListener("click", function(e) {
@@ -101,15 +109,11 @@
                           }  
                         });
 
-                        // Add data attribute to store full date
-                        //cell.setAttribute("data-date", `${year}-${month+1}-${date}`);
-
                         // Add click handler to schedule event
                         cell.addEventListener("click", () => {
                             // For now → redirect to Flask form
                             window.location.href = `/add_event?date=${dateStr}`;
                         });
-
                         // Move to next date
                         date++;
                     }
