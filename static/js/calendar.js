@@ -82,12 +82,21 @@
                             //Create Event Label
                             let div = document.createElement("div");
                             div.className = "event";
-                            div.textContent = ev.title; // Show event title
+                            div.textContent = ev.title; 
+                            
+                         
+                            // Add Edit-on-click
+                            div.addEventListener("click", function(e) {
+                              e.stopPropagation(); //prevent triggering the <td> redirect
+                              let newTitle = prompt("Edit Event Title:", div.textContent);
+                              if (newTitle) {
+                                div.textContent = newTitle;
+                              
+                              }
+                            });
                             cell.appendChild(div);  // Add event to cell
                           }  
                         });
-
-
 
                         // Add data attribute to store full date
                         //cell.setAttribute("data-date", `${year}-${month+1}-${date}`);
@@ -132,6 +141,17 @@
             prevBtn.addEventListener("click", prevMonth);
             nextBtn.addEventListener("click", nextMonth);
         });
+
+        // Delegate event editing (when an event div is clicked)
+        document.addEventListener("click", function(e){
+          if (e.target.classList.contains("event")) {
+            let newTitle = prompt("Edit Event Title:", e.target.textContent);
+            if (newTitle) {
+                e.target.textContent = newTitle; //Update Text 
+            }
+          }  
+        });
+
 
         //Helper to fetch events and render
         function loadAndRenderCalendar() {
