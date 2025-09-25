@@ -1,3 +1,6 @@
+        //calendar.js
+        //This is the JavaScript used in the Flask Calendar Project
+        
         // Get today's date
         const today = new Date();
 

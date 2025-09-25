@@ -1,0 +1,39 @@
+/*calendar.css */
+/* CSS for Flask Calendar Project */
+
+
+/* Calendar table styling */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Each cell in the calendar */
+th, td {
+    border: 1px solid #ddd;
+    width: 14.2%;      /* 100% / 7 days */
+    height: 80px;      /* Fixed height for each day */
+    text-align: center;
+    vertical-align: top;
+    padding: 5px;
+}
+
+/* Highlight for today */
+.today {
+    background-color: #ffeb3b;
+}
+
+/* Placeholder for events (will add later) */
+.event {
+    background-color: #90ee90;
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.event.invalid span{
+    display: block;
+    font-size: 10px;
+    color: yellow;
+}
