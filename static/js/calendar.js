@@ -89,24 +89,38 @@
                             
                             //Validate allowed day & hour (CST)
                             let eventTime = new Date(ev.start);
+
                             // Adjust to CST if your times are UTC
-                            eventTime = new Date(eventTime.getTime()) - 6*60*60*1000); //UTC > CST conversion
+                            eventTime = new Date(eventTime.getTime() - 6*60*60*1000); //UTC > CST conversion
+                            
                             let day = eventTime.getDay();
                             let hour = eventTime.getHours();
 
+                            let allowedDay = (day >= 2 && day < 5); //Tue-Thu
+                            let allowedHour = (hour >= 0 && hour < 5); //12am - 5am
                             
-                         
+                            // If event falls OUTSIDE allowed window → mark invalid
+                            if (!allowedDay || !allowedHour) {
+                              div.classList.add("invalid"); // Apply red styling (from CSS)
+                            }
+
+                            // Add a warning text under the title
+                            let warning = document.createElement("span");
+                            warning.textContent = "Outside Testing Parameters";
+                            div.appendChild(warning);
+                          
+
                             // Add Edit-on-click
                             div.addEventListener("click", function(e) {
                               e.stopPropagation(); //prevent triggering the <td> redirect
                               let newTitle = prompt("Edit Event Title:", div.textContent);
                               if (newTitle) {
                                 div.textContent = newTitle;
-                              
                               }
                             });
+
                             cell.appendChild(div);  // Add event to cell
-                          }  
+                          }
                         });
 
                         // Add click handler to schedule event
