@@ -89,27 +89,18 @@
                             
                             //Validate allowed day & hour (CST)
                             let eventTime = new Date(ev.start);
-
                             // Adjust to CST if your times are UTC
                             eventTime = new Date(eventTime.getTime() - 6*60*60*1000); //UTC > CST conversion
-                            
                             let day = eventTime.getDay();
                             let hour = eventTime.getHours();
-
-                            
                          
                             // Add Edit-on-click
                             div.addEventListener("click", function(e) {
                               e.stopPropagation(); //prevent triggering the <td> redirect
-                              let newTitle = prompt("Edit Event Title:", div.textContent);
-                              if (newTitle) {
-                                div.textContent = newTitle;
-                              
-                              }
+                              window.location.href = `/edit_event/${ev.id}`;
                             });
-
                             cell.appendChild(div);  // Add event to cell
-                          }
+                          }  
                         });
 
                         // Add click handler to schedule event
