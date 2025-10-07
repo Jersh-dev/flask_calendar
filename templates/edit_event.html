@@ -1,37 +1,52 @@
 <!-- edit_event.html -->
+<!-- Template for editing existing events -->
+<!-- Provides a form pre-populated with current event data -->
+
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Standard meta and title tags -->
     <meta charset="utf-8">
     <title>Edit Disaster Recovery Test Event</title>
 </head>
 <body>
+    <!-- Page heading -->
     <h1>Edit Event</h1>
 
     <!-- Form to edit an existing event -->
+    <!-- POST method sends data back to the same URL with updated values -->
     <form method="POST">
-        <!-- Event Title -->
+        
+        <!-- Event Title Input -->
+        <!-- Pre-populated with current event title using Jinja2 templating -->
         <label>Test Name:</label><br>
         <input type="text" name="title" value="{{ event.title }}" required><br><br>
 
-        <!-- Event Start Date/Time -->
+        <!-- Event Start Date/Time Input -->
+        <!-- Jinja2 filter replaces space with 'T' for datetime-local format -->
+        <!-- datetime-local requires YYYY-MM-DDTHH:MM format -->
         <label>Start Date & Time:</label><br>
         <input type="datetime-local" name="start" value="{{ event.start | replace(' ', 'T') }}" required><br><br>
 
-        <!-- Event End Date/Time -->
+        <!-- Event End Date/Time Input -->
+        <!-- Same formatting as start time for consistency -->
         <label>End Date & Time:</label><br>
         <input type="datetime-local" name="end" value="{{ event.end | replace(' ', 'T') }}" required><br><br>
 
-        <!-- Event Description -->
+        <!-- Event Description Textarea -->
+        <!-- Multi-line input for detailed event information -->
+        <!-- Content between textarea tags is the default value -->
         <label>Description:</label><br>
         <textarea name="description" required>{{ event.description }}</textarea><br><br>
 
         <!-- Submit Button -->
+        <!-- Triggers form submission to update the event -->
         <button type="submit">Update Event</button>
     </form>
 
     <br>
-    <!-- Link back to main calendar -->
+    <!-- Navigation link back to main calendar -->
+    <!-- Uses Flask url_for() to generate proper URL -->
     <a href="{{ url_for('index') }}">Back to Calendar</a>
 </body>
 </html>
