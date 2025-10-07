@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Character encoding for proper text display -->
+    <meta charset="utf-8">
+    
+    <!-- Page title that appears in browser tab -->
+    <title>Schedule DR Test</title>
+    
+    <!-- Link to external CSS file using Flask's url_for() function -->
+    <!-- url_for() generates proper URLs even if the app is deployed to a subdirectory -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/schedule_event.css') }}">
+</head>
+<body>
+    <!-- Main container for centered layout and styling -->
+    <div class="container">
+        <!-- Page heading with semantic HTML structure -->
+        <h1>Schedule Disaster Recovery Test</h1>
+        
+        <!-- Error message display section -->
+        <!-- Jinja2 conditional: only show if errors exist -->
+        {% if errors %}
+        <div class="error-messages">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+                <!-- Jinja2 loop: iterate through error list from Flask -->
+                {% for error in errors %}
+                <li>{{ error }}</li>  <!-- Display each error message -->
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- Main form element with POST method for data submission -->
+        <!-- ID allows JavaScript to reference this form -->
+        <form method="POST" id="scheduleForm">
+            <!-- Schedule Type Selection Section -->
+            <div class="form-section">
+                <h3>Choose Scheduling Method</h3>
+                
+                <!-- Interactive schedule type selector -->
+                <div class="schedule-type">
+                    <!-- Auto scheduling option -->
+                    <!-- data-type attribute stores the selection value -->
+                    <!-- onclick calls JavaScript function for immediate feedback -->
+                    <div class="schedule-option" data-type="auto" onclick="selectScheduleType('auto')">
+                        <h4>Auto Schedule</h4>
+                        <p>Automatically schedule a DR test 7 weeks from today at 9:00 AM</p>
+                    </div>
+                    
+                    <!-- Manual scheduling option (default selected) -->
+                    <!-- 'selected' class provides initial visual state -->
+                    <div class="schedule-option selected" data-type="manual" onclick="selectScheduleType('manual')">
+                        <h4>Manual Schedule</h4>
+                        <p>Customize all details of your DR test</p>
+                    </div>
+                </div>
+                
+                <!-- Hidden input to track selected schedule type -->
+                <!-- This value is sent to the server with form submission -->
+                <input type="hidden" name="schedule_type" id="schedule_type" value="manual">
+                
+                <!-- Information box for auto scheduling (initially hidden) -->
+                <div class="auto-schedule-info" id="auto-info" style="display: none;">
+                    <strong>Auto Schedule Details:</strong>
+                    <!-- Static information about what auto-scheduling provides -->
+                    <ul>
+                        <li>Date: 7 weeks from today</li>
+                        <li>Time: 9:00 AM - 11:00 AM</li>
+                        <li>Title: "Auto Scheduled DR Test"</li>
+                        <li>Description: Standard DR test description</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Manual Form Fields Section -->
+            <!-- 'active' class makes this visible by default -->
+            <!-- JavaScript will toggle visibility based on schedule type selection -->
+            <div class="manual-form active" id="manual-form">
+                <div class="form-section">
+                    <h3>Test Details</h3>
+                    
+                    <!-- Form group pattern: consistent spacing and layout -->
+                    <div class="form-group">
+                    <!-- Test Name Input Field -->
+                    <div class="form-group">
+                        <!-- Label with required field indicator -->
+                        <!-- 'for' attribute links label to input for accessibility -->
+                        <label for="title">Test Name <span class="required">*</span></label>
+                        
+                        <!-- Text input with multiple attributes for better UX -->
+                        <input type="text" name="title" id="title" 
+                               placeholder="Example: Disaster Recovery Test US eCommerce Payment App" 
+                               value="{{ form_data.title if form_data else '' }}"
+                               maxlength="200">
+                        
+                        <!-- Help text for user guidance -->
+                        <div class="help-text">Minimum 3 characters, maximum 200 characters</div>
+                    </div>
+                    
+                    <!-- Description Text Area -->
+                    <div class="form-group">
+                        <label for="description">Description <span class="required">*</span></label>
+                        
+                        <!-- Textarea for multi-line input -->
+                        <!-- Jinja2 templating preserves user input on validation errors -->
+                        <textarea name="description" id="description" 
+                                  placeholder="Detailed description of the DR test scope, objectives, and expected outcomes..."
+                                  maxlength="1000">{{ form_data.description if form_data else '' }}</textarea>
+                        <div class="help-text">Minimum 10 characters, maximum 1000 characters</div>
+                    </div>
+                </div>
+                
+                <!-- Scheduling Section -->
+                <div class="form-section">
+                    <h3>Schedule</h3>
+                    
+                    <!-- Start Date/Time Input -->
+                    <div class="form-group">
+                        <label for="start">Start Date & Time <span class="required">*</span></label>
+                        
+                        <!-- HTML5 datetime-local input provides native date/time picker -->
+                        <!-- JavaScript will set minimum date to today -->
+                        <input type="datetime-local" name="start" id="start" 
+                               value="{{ form_data.start if form_data else '' }}">
+                        <div class="help-text">Select the date and time when the DR test will begin</div>
+                    </div>
+                    
+                    <!-- End Date/Time Input -->
+                    <div class="form-group">
+                        <label for="end">End Date & Time <span class="required">*</span></label>
+                        
+                        <!-- Second datetime input for end time -->
+                        <!-- JavaScript will ensure this is after start time -->
+                        <input type="datetime-local" name="end" id="end" 
+                               value="{{ form_data.end if form_data else '' }}">
+                        <div class="help-text">Select the expected end date and time</div>
+                    </div>
+                </div>
+                
+                <!-- Template Selection Section -->
+                <!-- This provides pre-built content for common scenarios -->
+                <div class="form-section">
+                    <h3>Quick Templates (Optional)</h3>
+                    <div class="form-group">
+                        <label for="template">Load Template</label>
+                        
+                        <!-- Dropdown select with onchange event -->
+                        <!-- Calls JavaScript function to populate form fields -->
+                        <select id="template" onchange="loadTemplate()">
+                            <option value="">-- Select a template --</option>
+                            <option value="basic">Basic DR Test</option>
+                            <option value="database">Database DR Test</option>
+                            <option value="application">Application DR Test</option>
+                            <option value="network">Network DR Test</option>
+                        </select>
+                        <div class="help-text">Select a template to auto-fill common test scenarios</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Action Buttons -->
+            <div class="button-group">
+                <!-- Primary submit button -->
+                <!-- type="submit" triggers form submission and validation -->
+                <button type="submit" class="btn-primary">Schedule Test</button>
+                
+                <!-- Back button styled as secondary button -->
+                <!-- Uses Flask url_for() to generate proper URL to home page -->
+                <!-- Inline styles make it look like a button while being a link -->
+                <a href="{{ url_for('index') }}" class="btn-secondary" 
+                   style="text-decoration: none; display: inline-block; text-align: center;">Back to Calendar</a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Load external JavaScript file for form functionality -->
+    <!-- Placed at end of body for better page load performance -->
+    <script src="{{ url_for('static', filename='js/schedule_event.js') }}"></script>
+</body>
+</html>
