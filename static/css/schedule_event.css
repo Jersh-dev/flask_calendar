@@ -1,0 +1,198 @@
+/* 
+ * Schedule Event Form Styles
+ * 
+ * This CSS file provides comprehensive styling for the consolidated event
+ * scheduling form. It demonstrates modern CSS practices including:
+ * - Responsive design principles
+ * - Consistent color schemes and spacing
+ * - Form accessibility considerations
+ * - Progressive enhancement styling
+ * - Modern layout techniques (flexbox, etc.)
+ */
+
+/* Global body styling - creates a centered, clean layout */
+body {
+    font-family: Arial, sans-serif;    /* Web-safe font stack for consistency */
+    max-width: 800px;                  /* Limit width for readability */
+    margin: 0 auto;                    /* Center the content horizontally */
+    padding: 20px;                     /* Add breathing room on all sides */
+    background-color: #f5f5f5;         /* Light gray background for contrast */
+}
+
+/* Main container - provides the white "card" effect */
+.container {
+    background-color: white;           /* Clean white background */
+    padding: 30px;                     /* Generous internal spacing */
+    border-radius: 8px;                /* Rounded corners for modern look */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* Main heading - clear hierarchy and visual focus */
+h1 {
+    color: #333;                       /* Dark gray for good contrast */
+    text-align: center;                /* Center alignment for focus */
+    margin-bottom: 30px;               /* Space separation from content */
+}
+
+/* Form sections - group related fields visually */
+.form-section {
+    margin-bottom: 30px;               /* Vertical spacing between sections */
+    padding: 20px;                     /* Internal padding for content */
+    border: 1px solid #ddd;            /* Light border for definition */
+    border-radius: 5px;                /* Slightly rounded corners */
+    background-color: #fafafa;         /* Very light background for grouping */
+}
+
+/* Section headings - establish clear information hierarchy */
+.form-section h3 {
+    margin-top: 0;                     /* Remove default top margin for clean alignment */
+    color: #555;                       /* Slightly lighter than main text for hierarchy */
+}
+
+/* Schedule type selector - modern toggle interface */
+.schedule-type {
+    display: flex;                     /* Flexbox for equal-width columns */
+    gap: 20px;                         /* Space between options */
+    margin-bottom: 20px;               /* Space before next content */
+}
+
+/* Individual schedule options - interactive cards */
+.schedule-option {
+    flex: 1;                           /* Equal width for both options */
+    padding: 15px;                     /* Comfortable click target size */
+    border: 2px solid #ddd;            /* Visible border for definition */
+    border-radius: 5px;                /* Rounded corners for modern feel */
+    text-align: center;                /* Center text for symmetry */
+    cursor: pointer;                   /* Indicate interactivity */
+    transition: all 0.3s ease;         /* Smooth hover animation */
+}
+
+/* Hover state - provides immediate visual feedback */
+.schedule-option:hover {
+    border-color: #007bff;             /* Blue border on hover */
+    background-color: #e7f3ff;         /* Light blue background */
+}
+
+.schedule-option.selected {
+    border-color: #007bff;
+    background-color: #007bff;
+    color: white;
+}
+
+/* Dynamic form sections - initially hidden for progressive disclosure */
+.manual-form {
+    display: none;                     /* Hidden by default - JavaScript will show */
+}
+
+/* Active state - makes forms visible when selected */
+.manual-form.active {
+    display: block;                    /* Show when activated by JavaScript */
+}
+
+/* Form group - consistent spacing for form fields */
+.form-group {
+    margin-bottom: 20px;               /* Vertical rhythm between fields */
+}
+
+/* Form labels - clear, accessible field identification */
+label {
+    display: block;                    /* Full width for proper layout */
+    margin-bottom: 5px;                /* Space between label and input */
+    font-weight: bold;                 /* Emphasize importance */
+    color: #333;                       /* Dark color for good contrast */
+}
+
+/* Form inputs - consistent styling across all input types */
+input[type="text"],
+input[type="datetime-local"],
+textarea,
+select {
+    width: 100%;                       /* Full width within container */
+    padding: 10px;                     /* Comfortable touch targets */
+    border: 1px solid #ddd;            /* Subtle border definition */
+    border-radius: 4px;                /* Slightly rounded corners */
+    font-size: 14px;                   /* Readable text size */
+    box-sizing: border-box;            /* Include padding in width calculation */
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;                   /* Allow users to resize textareas vertically only */
+}
+
+/* Button container - organized, centered button layout */
+.button-group {
+    display: flex;                     /* Flexbox for button alignment */
+    gap: 15px;                         /* Space between buttons */
+    justify-content: center;           /* Center buttons horizontally */
+    margin-top: 30px;                  /* Space from form content above */
+}
+
+/* Base button styling - modern, accessible button design */
+button {
+    padding: 12px 30px;                /* Generous padding for touch targets */
+    border: none;                      /* Remove default browser borders */
+    border-radius: 5px;                /* Rounded corners for modern look */
+    font-size: 16px;                   /* Readable text size */
+    cursor: pointer;                   /* Indicate interactivity */
+    transition: all 0.3s ease;         /* Smooth hover transitions */
+}
+
+/* Primary button - main action styling (submit, save, etc.) */
+.btn-primary {
+    background-color: #007bff;         /* Bootstrap-style blue for primary actions */
+    color: white;                      /* White text for contrast */
+}
+
+/* Primary button hover - darker blue for interaction feedback */
+.btn-primary:hover {
+    background-color: #0056b3;         /* Darker blue on hover */
+}
+
+/* Secondary button - less prominent actions (cancel, reset, etc.) */
+.btn-secondary {
+    background-color: #6c757d;         /* Gray color for secondary importance */
+    color: white;                      /* White text for contrast */
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Error message styling - clear, attention-grabbing error display */
+.error-messages {
+    background-color: #f8d7da;         /* Light red background for errors */
+    color: #721c24;                    /* Dark red text for readability */
+    padding: 15px;                     /* Adequate padding for readability */
+    border-radius: 5px;                /* Rounded corners to match form style */
+    margin-bottom: 20px;               /* Space before form content */
+    border: 1px solid #f5c6cb;         /* Subtle border for definition */
+}
+
+/* Error list styling - clean, scannable error presentation */
+.error-messages ul {
+    margin: 0;                         /* Remove default margins */
+    padding-left: 20px;                /* Indent for bullet points */
+}
+
+/* Info messages - helpful information without alarm */
+.auto-schedule-info {
+    background-color: #d1ecf1;         /* Light blue background for info */
+    color: #0c5460;                    /* Dark blue text for contrast */
+    padding: 15px;                     /* Consistent padding with errors */
+    border-radius: 5px;                /* Matching border radius */
+    margin-top: 15px;                  /* Space from content above */
+    border: 1px solid #bee5eb;         /* Light blue border */
+}
+
+/* Help text - subtle guidance without overwhelming the interface */
+.help-text {
+    font-size: 12px;                   /* Smaller text for less prominence */
+    color: #666;                       /* Gray color for subtlety */
+    margin-top: 5px;                   /* Small space from related element */
+}
+
+/* Required field indicator - clearly marks mandatory fields */
+.required {
+    color: #dc3545;                    /* Red color to indicate required fields */
+}

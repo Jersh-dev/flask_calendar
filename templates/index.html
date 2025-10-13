@@ -1,16 +1,26 @@
 <!--index.html -->
 <!--This is the main page for the Flask Calendar Project-->
+<!-- index.html -->
+<!-- This is the main page for the Flask Calendar Project -->
+<!-- Displays a calendar view with scheduled DR tests and navigation -->
 
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Link to external CSS file for calendar styling -->
+    <!-- url_for() ensures proper static file URL generation -->
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/calendar.css')}}">
+
+    <!-- Character encoding for proper text display -->
     <meta charset="utf-8">
+
+    <!-- Page title displayed in browser tab -->
     <title>DR Test Calendar</title>
 </head>
 
 
 <body>
+    <!-- Main page heading -->
     <h1>Disaster Recovery Test Calendar</h1>
 
     <!-- Link to scheduling form -->
@@ -21,29 +31,48 @@
     <!-- Automatic Scheduling Button-->
     <form action="{{url_for('auto_schedule')}}" method="post" style="display:inline;">
       <button type="submit"> Auto-Schedule Test (7 Weeks Out) </button>
+    <!-- Consolidated Scheduling Button -->
+    <!-- Form with GET method navigates to the scheduling page -->
+    <!-- Inline styling for quick button appearance (could be moved to CSS) -->
+    <form action="{{url_for('schedule_event')}}" method="get" style="display:inline;">
+      <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-right: 10px;"> 
+        Schedule DR Test 
+      </button>
     </form>
 
     <!-- Calendar navigation -->
+    <!-- Calendar Navigation Controls -->
+    <!-- Buttons call JavaScript functions for month navigation -->
     <div>
       <button onclick="prevMonth()"> Previous </button>
       <button onclick="nextMonth()"> Next</button>
+      <button onclick="nextMonth()"> Next </button>
     </div>
 
     <!-- Display month + year -->
+    <!-- Dynamic month and year display -->
+    <!-- Content populated by JavaScript -->
     <h2 id="month-year"></h2>
 
     <!-- Calendar structure -->
+    <!-- Calendar Table Structure -->
     <table id="calendar">
+        <!-- Table header with day abbreviations -->
         <thead>
             <tr>
                 <!-- Static day headers -->
+                <!-- Static day headers for consistent layout -->
                 <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
                 <th>Thu</th><th>Fri</th><th>Sat</th>
             </tr>
         </thead>
+        <!-- Table body populated dynamically by JavaScript -->
         <tbody id="calendar-body"></tbody>
     </table>
 
+    <!-- Load external JavaScript file for calendar functionality -->
+    <!-- Placed at end of body for better page load performance -->
+    <!-- Handles calendar rendering, navigation, and event display -->
     <script src="{{ url_for('static', filename = 'js/calendar.js')}}"></script>
 </body>
 </html>

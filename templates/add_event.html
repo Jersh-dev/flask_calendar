@@ -1,39 +1,53 @@
-<!--add_event.html -->
-<!--This is the event page for the Flask Calendar Project-->
+<!-- add_event.html -->
+<!-- Legacy event creation page for the Flask Calendar Project -->
+<!-- Note: This template is maintained for backward compatibility -->
+<!-- New development should use the consolidated schedule_event.html -->
+ 
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Standard HTML5 character encoding -->
         <meta charset ="utf-8">
+        <!-- Page title for browser tab -->
         <title>Schedule DR Test</title>
     </head>
         <body>
+            <!-- Main page heading -->
             <h1>Schedule Disaster Recovery Test</h1>
-            <!--Form to add a new event -->
-            <!-- When submitted, it sends data via POST to /add-event -->
+            <!-- Form to add a new event -->
+            <!-- POST method sends form data to the server for processing -->
+            <!-- Action omitted means form submits to the same URL -->
             <form method ="POST">
 
-                <!--Event Name-->
+                <!-- Event Name Input -->
+                <!-- 'required' attribute provides client-side validation -->
                 <label> Test Name: </label><br>
                 <input type="text" name="title" placeholder="Example: Disaster Recovery Test US eCommerce Payment App" required><br><br>
 
-                <!--Start dat/time of test-->
+                <!-- Start Date/Time Input -->
+                <!-- datetime-local provides native browser date/time picker -->
                 <label> Event Start Date & Time:</label><br>
                 <input type="datetime-local" id="start" name="start" required>
                 <br><br>
                 
-                <!--Estimated End Time of Test-->
+                <!-- End Date/Time Input -->
+                <!-- Should be validated to ensure it's after start time -->
                 <label> End Date & Time:</label><br>
                 <input type="datetime-local" name="end" required><br><br>
                 
-                <!--Event Name-->
+                <!-- Description Textarea -->
+                <!-- Multi-line input for detailed event information -->
                 <label> Description:</label><br>
                 <textarea name="description" required></textarea><br><br>       
                 
-                <!--Event Name-->
+                <!-- Submit Button -->
+                <!-- Triggers form submission to create the event -->
                 <button type="submit">Save Event</button>
             </form>
             <br>
-            <!--Link back to calendar-->
+            
+            <!-- Navigation link back to main calendar -->
+            <!-- Uses Flask url_for() helper for proper URL generation -->
             <a href ="{{url_for('index')}}">Back to Calendar</a>
         </body>
 

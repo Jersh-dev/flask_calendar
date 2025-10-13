@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--Page Title for Browser-->
+        <title> DR Test Management Dashboard</title>
+
+    <!--Link to CSS file for dashboard styling-->
+    <!--This assumes you have separate CSS file for the dashboard-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/integration_dashboard.css') }}">
+    
+    </head>
+    <body>
+        <!--Main container for centered layout-->
+        <div class = "container">
+            <!--Dashboard heading with emoji for visual appeal-->
+            <h1>Disaster Recovery Test Management</h1>
+
+            <!--Error message display section-->
+            <!--Jinja2 conditional: only show if error exists-->
+            {% if error %}
+            <div class = "error">
+                <strong>Error:</strong> {{ error }}
+                <br><br>
+                <!--Helper text for troubleshooting -->
+                <small> Make sure the calendar is running at {{ calendar_url }}</small>
+            </div>
+            {% endif %}
+
+            <!--Action buttons section-->
+            <!--Provides quick access to common dashboard functions-->
+            <div class = "actions" >
+                <!--Link to schedule new test using Flask url_for()-->
+                <a href ="{{ url_for ('schedule_test' ) }}" class ="btn btn-primary">Schedule New DR Test</a>
+
+                <!--Quick schedule link with embedded parameter-->
+                <!--Demonstrates passing URL parameters through Flask-->
+                <a href="{{ url_for('schedule_test', embed='true') }}" class="btn btn-secondary">Quick Schedule</a>
+
+                <!-- External link to full calendar view -->
+                <!--target="_blank" opens in new tab -->
+                <a href="{{ calendar_url }}" class="btn btn-success" target = "_blank">View Full Calendar</a>                
+            </div>
+
+            <!--Upcoming events section-->
+            <!--Conditional display based on whether events exist-->
+            {% if upcoming_events %}
+            <div class="events-section">
+                <h2>Upcoming DR Tests</h2>
+
+                <!--Loop through upcoming events -->
+                <!-- Demonstrates Jinja2 for loop for dynamic content -->
+                {% for event in upcoming_events %}
+                <div class="event-card"> 
+                    <!--Event Title Display -->
+                    <div class="event-title">{{ event.title}}</div>
+
+                    <!--Event Date with Formatting -->
+                    <div class="event-date">
+                        <!-- Jinja2 filter replaces "T" with readable text -->
+                        {{ event.start|replace 'T', ' at '}}
+
+                        <!-- Conditional display of days until event -->
+                        {% if event.days_until >= 0 %}
+                            <span class="days-until"> {{ event.days_until }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!--Event Description-->
+                    <div class="event-description">{{ event.description }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!--Past Events section-->
+            <!--Shows recent completed DR Tests for reference -->
+            {% if past_events %}
+            <div class = "events-section"> 
+                <h2>Recent DR Tests</h2>
+
+                <!--Loop through past events, limited to 5 most recent-->
+                <!--[:5] is Jinja2 slice syntax to limit results-->
+                {% for event in past_events[:5] %}
+                <div class="event-card">
+                    <div class="event-title">{{ event.title }}</div>
+                    <!--Date display without days calculation for past events-->
+                    <div class="event-date">{{ event.start|replace ('T', ' at ') }}</div>
+                    <div class="event-description">{{ event.description }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!--Empty State Message -->
+            <!--Shows when no events exist and there's no error -->
+            <!--Complex Jinja2 conditional with multiple conditions -->
+            {% if not upcoming_events and not past_events and not error %}
+            <div class="no-events">
+                <h3>No DR Tests Scheduled.</h3>
+                <p>Click "Schedule New DR Test" to get started!</p>
+            </div>
+            {% endif %}
+
+            <!--Footer with integration information-->
+            <!--Inline styles for quick styling(could be moved to CSS)-->
+            <div style ="text-align: center; margin-top: 40px; color: #666; font-size: 14px;">
+                <p>Integrated with Flask Container Service</p>
+            </div>
+        </div>
+        <!-- Load common JS used by schedule forms (ensures toggle and validation work) -->
+        <script src="{{ url_for('static', filename='js/schedule_event.js') }}"></script>
+    </body>
+</html>

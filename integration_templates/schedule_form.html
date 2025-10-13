@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schedule DR Test</title>
+
+    <!-- Link to the external CSS file located in the /static/css/ directory -->     
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/integration_form.css')}}">
+</head>
+<body>
+    <div class="container">
+        <h1>Schedule DR Test</h1>
+
+        <!-- Error block: Only shows up if the backend passes an 'errors' list -->
+        {% if errors %}
+        <div class="error">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+                <!-- Loop through each error and display it in a list -->
+                {% for error in errors %}
+                <li> {{ error }} </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+    <!-- Main scheduling form; data is sent via POST to the current route -->
+    <form method="POST" id="scheduleForm">
+
+            <!-- Schedule type selection section -->
+            <div class="schedule-type">
+
+                <!-- Option 1: Auto schedule (7 weeks from today) -->
+                <!-- When clicked, triggers JS to set 'schedule_type' to 'auto' -->                
+                <div class="schedule-option" onclick="selectScheduleType('auto')">
+                    <h4>Auto Schedule</h4>    
+                    <p>7 weeks from today</p>
+                </div>
+
+                <!-- Option 2: Manual schedule (default active option) -->
+                <!-- Selected state is indicated by 'selected' class -->                
+                <div class="schedule-option selected" onclick="selectScheduleType('manual')">
+                    <h4>Manual Schedule</h4>    
+                    <p>Custom Date and Time</p>
+                </div>
+            </div>
+
+
+            <!-- Hidden input that stores which scheduling type was selected -->
+            <input type="hidden" name="schedule_type" id="schedule_type" value="manual">
+            
+            <!-- Manual schedule form (shown when 'manual' is selected) -->
+            <div class="manual-form active" id="manual-form">
+
+                <!-- Input for the DR Test name -->                
+                <div class="form-group">
+                    <label for="title">Test Name</label>
+                    <input type="text" name="title" id="title" required
+                           value="{{ form_data.title if form_data else ''  }}"
+                           placeholder="e.g., Database DR test Q4 2025">
+                </div>
+
+                <!-- Input for start date & time (HTML5 datetime-local) -->
+                <div class="form-group">
+                    <label for="start">Start Date and Time *</label>
+                    <input type="datetime-local" name="start" id="start" required
+                           value="{{form_data.start if form_data else '' }}">
+                </div>             
+                
+                <!-- Input for end date & time (HTML5 datetime-local) -->  
+                <div class="form-group">
+                    <label for="end">End Date and Time *</label>
+                    <input type="datetime-local" name="end" id="end" required
+                           value="{{form_data.end if form_data else '' }}">
+                </div>  
+                
+                <!-- Text area for describing the DR test -->
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea name="description" id="description" required 
+                              placeholder="Describe the scope and objectives of this DR test...">{{ form_data.description if form_data else '' }}</textarea>
+                </div>                
+            </div>
+
+            <!-- Auto-schedule informational block (shown when auto selected) -->
+            <div id="auto-info" style="display:none;" class="auto-info">
+                <p>Auto scheduling will create a DR test 7 weeks from today. No additional input required.</p>
+            </div>
+
+            <!-- Submit and Cancel buttons -->     
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">Schedule Test</button>
+                <!-- Cancel button takes the user back to the dashboard page -->     
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>            
+            </div>        
+        </form>
+    </div>
+    <!-- JavaScript file that handles form behavior (auto/manual toggle, etc.) -->
+    <script src="{{ url_for('static', filename='js/schedule_event.js') }}"></script>
+</body>
+
+</html>
